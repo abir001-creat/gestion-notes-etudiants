@@ -2,10 +2,10 @@ import json
 import tkinter as tk
 from tkinter import messagebox
 
-# global dictionary bch ystoki student data
+# Dictionnaire global pour stocker les données des étudiants
 etudiants = {}
 
-# load data mn file ismou JSON
+# Charger les données des étudiants à partir d’un fichier JSON
 def charger_donnees():
     global etudiants
     try:
@@ -14,12 +14,12 @@ def charger_donnees():
     except FileNotFoundError:
         pass
 
-# Save data fi file JSON
+# Enregistrer les données des étudiants dans un fichier JSON
 def sauvegarder_donnees():
     with open("etudiants.json", "w") as fichier:
         json.dump(etudiants, fichier, indent=4)
 
-# nzid or update student
+# Ajouter un étudiant ou mettre à jour sa note dans une matière
 def ajouter_etudiant_interface(nom, matiere, note):
     global etudiants
     if not nom or not matiere or not note:
@@ -35,14 +35,14 @@ def ajouter_etudiant_interface(nom, matiere, note):
         messagebox.showerror("Erreur", "La note doit être un nombre.")
         return
     
-    # nzid or update data
+    # Ajouter ou mettre à jour la note de l’étudiant
     if nom not in etudiants:
         etudiants[nom] = {}
     etudiants[nom][matiere] = note
     messagebox.showinfo("Succès", f"Les données pour '{nom}' ont été ajoutées ou mises à jour.")
     sauvegarder_donnees()
 
-# nfsa5 student
+# Supprimer un étudiant du dictionnaire
 def supprimer_etudiant(nom):
     global etudiants
     if nom in etudiants:
@@ -52,7 +52,7 @@ def supprimer_etudiant(nom):
     else:
         messagebox.showerror("Erreur", f"L'étudiant '{nom}' n'existe pas.")
 
-# function afficher_moyennes tafichi lmoyenet in a new window
+# Afficher les moyennes de chaque étudiant dans une nouvelle fenêtre
 def afficher_moyennes():
     fenetre_moyennes = tk.Toplevel()
     fenetre_moyennes.title("Moyennes des étudiants")
@@ -60,28 +60,29 @@ def afficher_moyennes():
     total_notes = 0
     total_matieres = 0
     lignes = []
-
+    
+    # Calcul des moyennes individuelles et cumul des notes
     for nom, matieres in etudiants.items():
         moy_etudiant = sum(matieres.values()) / len(matieres)
         lignes.append((nom, moy_etudiant))
         total_notes += sum(matieres.values())
         total_matieres += len(matieres)
 
-    # trateb students by average
+    # Trier les étudiants par moyenne décroissante
     lignes.sort(key=lambda x: x[1], reverse=True)
 
-    # tafichi sorted data
+    # Afficher les résultats triés
     for nom, moyenne in lignes:
         tk.Label(fenetre_moyennes, text=f"{nom}: {moyenne:.2f}").pack()
 
-    # general average
+    # Afficher la moyenne générale de la classe
     if total_matieres > 0:
         moy_classe = total_notes / total_matieres
         tk.Label(fenetre_moyennes, text=f"\nMoyenne générale de la classe : {moy_classe:.2f}").pack()
     else:
         tk.Label(fenetre_moyennes, text="Aucune donnée disponible.").pack()
 
-#tlawaj 3al student mn ismou
+# Rechercher un étudiant et afficher ses notes dans une fenêtre
 def rechercher_etudiant_interface(nom):
     if nom in etudiants:
         notes = etudiants[nom]
@@ -90,13 +91,13 @@ def rechercher_etudiant_interface(nom):
     else:
         messagebox.showerror("Erreur", f"L'étudiant '{nom}' n'existe pas.")
 
-# main interface
+# Créer l'interface graphique principale
 def interface_principale():
     charger_donnees()
     fenetre = tk.Tk()
     fenetre.title("Gestion des notes des étudiants")
 
-    # tzid student
+    # Formulaire pour ajouter une note
     tk.Label(fenetre, text="Nom de l'étudiant").grid(row=0, column=0, pady=5)
     entry_nom = tk.Entry(fenetre)
     entry_nom.grid(row=0, column=1, pady=5)
@@ -115,11 +116,11 @@ def interface_principale():
     )
     btn_ajouter.grid(row=3, column=0, columnspan=2, pady=10)
 
-    # t7seb the averages
+    # Bouton pour afficher les moyennes
     btn_moyennes = tk.Button(fenetre, text="Afficher les moyennes", command=afficher_moyennes)
     btn_moyennes.grid(row=4, column=0, columnspan=2, pady=10)
 
-    # tlwj 3al student
+    # Zone pour rechercher un étudiant
     tk.Label(fenetre, text="Nom de l'étudiant à rechercher").grid(row=5, column=0, pady=5)
     entry_recherche = tk.Entry(fenetre)
     entry_recherche.grid(row=5, column=1, pady=5)
@@ -130,7 +131,7 @@ def interface_principale():
     )
     btn_rechercher.grid(row=6, column=0, columnspan=2, pady=10)
 
-    # tfasa5 student
+    # Zone pour supprimer un étudiant
     tk.Label(fenetre, text="Nom de l'étudiant à supprimer").grid(row=7, column=0, pady=5)
     entry_suppression = tk.Entry(fenetre)
     entry_suppression.grid(row=7, column=1, pady=5)
@@ -141,9 +142,9 @@ def interface_principale():
     )
     btn_supprimer.grid(row=8, column=0, columnspan=2, pady=10)
 
-    # launch the interface
+    # lancer l'interface
     fenetre.mainloop()
 
-#launch the application
+# Lancer l'application
 if __name__ == "__main__":
     interface_principale()
